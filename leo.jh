@@ -1,0 +1,107 @@
+entity Role {
+	roleId Integer,
+    roleName String,
+    create Boolean,
+    read Boolean,
+    update Boolean,
+    delete Boolean
+}
+
+entity Profile {
+	profileId Integer,
+	profileName String
+}
+
+entity User {
+	userId Integer,
+	userLogin String,
+	userPassword String,
+	userBirthDate LocalDate
+}
+
+entity Artist {
+	artistId Integer,
+    artistFirstname String,
+    artistLastName String,
+    artistBirthDate LocalDate,
+}
+
+entity Job {
+	jobId Integer,
+    jobName String
+}
+
+entity Genre {
+	genreId Integer,
+    genreName String
+}
+
+entity Fiction {
+	fictionId Integer,
+    fictionTitle String,
+    fictionGenres Genre 
+}
+
+entity Movie {
+	movieId Integer,
+    movieTitle String,
+    movieRelaseDate LocalDate,
+    movieDirectors Artist,
+    movieActors Artist,
+    movieAngerAverage Integer,
+    movieFearAverage Integer,
+    movieDisgustAverage Integer,
+    movieSadnessAverage Integer,
+    movieEnjoymentAverage Integer,
+    movieVotersNumber Integer
+}
+
+entity Emotion {
+	emotionId Integer,
+    emotionName String,
+    emotionIntensity Integer
+}
+
+entity EmotionGroup {
+	groupId Integer,
+    groupName String
+}
+
+
+relationship ManyToMany {
+	Profile{roles} to Role{profile},
+    Fiction{genres} to Genre{fictions},
+	Fiction{votingUsers} to User{votedFictions},
+	//Artist{fiction} to Fiction{artist},
+    Artist{jobs} to Job{artists},
+	Job{fictions} to Fiction{jobs},
+	Emotion{fictionsVotes} to Fiction{votedEmotions},
+    Emotion{votingUsers} to User{votedEmotion}
+}
+
+relationship OneToMany {
+	User to Profile
+}
+
+relationship OneToMany {
+	Movie to Fiction{movies}
+}
+
+relationship OneToOne {
+	Emotion to EmotionGroup
+}
+	
+
+
+//Set pagination options
+//paginate Movie with infinite-scroll
+//paginate Job with pagination
+
+// Use Data Transfert Objects (DTO)
+// dto * with mapstruct
+
+// Set service options to all except few
+//service all with serviceImpl except Employee, Job
+
+// Set an angular suffix
+// angularSuffix * with mySuffix
