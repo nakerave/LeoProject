@@ -1,96 +1,74 @@
-entity Role {
-	roleId Integer,
-    roleName String,
-    create Boolean,
-    read Boolean,
-    update Boolean,
-    delete Boolean
-}
-
-entity Profile {
-	profileId Integer,
-	profileName String
-}
-
-entity User {
-	userId Integer,
-	userLogin String,
-	userPassword String,
-	userBirthDate LocalDate
-}
-
 entity Artist {
-	artistId Integer,
-    artistFirstname String,
-    artistLastName String,
-    artistBirthDate LocalDate,
+    firstname String,
+    lastName String,
+    birthDate LocalDate,
 }
 
-entity Job {
-	jobId Integer,
-    jobName String
+entity ArtistMovieRole {
+    name String
 }
 
 entity Genre {
-	genreId Integer,
-    genreName String
-}
-
-entity Fiction {
-	fictionId Integer,
-    fictionTitle String,
-    fictionGenres Genre 
+    name String
 }
 
 entity Movie {
-	movieId Integer,
-    movieTitle String,
-    movieRelaseDate LocalDate,
-    movieDirectors Artist,
-    movieActors Artist,
-    movieAngerAverage Integer,
-    movieFearAverage Integer,
-    movieDisgustAverage Integer,
-    movieSadnessAverage Integer,
-    movieEnjoymentAverage Integer,
-    movieVotersNumber Integer
+    // lien vers l'API movieDataBase pour les infos du film :
+    moviedbID Integer,
+    angerAverage Float,
+    fearAverage Float,
+    disgustAverage Float,
+    sadnessAverage Float,
+    enjoymentAverage Float,
+    angerVotersNumber Integer,
+    fearVotersNumber Integer,
+    disgustVotersNumber Integer,
+    sadnessVotersNumber Integer,
+    enjoymentVotersNumber Integer,
 }
 
+// 7 émotions par EmotionGroup
 entity Emotion {
-	emotionId Integer,
-    emotionName String,
-    emotionIntensity Integer
+    name String,
+    description String,
+    intensity Integer
 }
 
+// 5 EmotionGroups
 entity EmotionGroup {
-	groupId Integer,
-    groupName String
+    name String,
+    description String
 }
 
+entity User {
+    login String,
+    password String,
+    email String,
+    birthDate LocalDate
+}
 
-relationship ManyToMany {
-	Profile{roles} to Role{profile},
-    Fiction{genres} to Genre{fictions},
-	Fiction{votingUsers} to User{votedFictions},
-	//Artist{fiction} to Fiction{artist},
-    Artist{jobs} to Job{artists},
-	Job{fictions} to Fiction{jobs},
-	Emotion{fictionsVotes} to Fiction{votedEmotions},
-    Emotion{votingUsers} to User{votedEmotion}
+entity UserVote {
+    // Si pas de vote de l'utilisateur pour une émotion : valeur à null,
+    // et donc non comptabilisée dans la moyenne de cette émotion
+    angerVote Float,
+    fearVote Float,
+    disgustVote Float,
+    sadnessVote Float,
+    enjoymentVote Float
+}
+
+relationship ManyToOne {
+    ArtistMovieRole to Artist,
+    Emotion{emotionGroup} to EmotionGroup,
+    UserVote{user} to User,
+    UserVote{fiction} to Movie,
+    UserVote{emotion} to Emotion,
 }
 
 relationship OneToMany {
-	User to Profile
+    Movie{genres} to Genre,
+    Movie{roles} to ArtistMovieRole,
 }
-
-relationship OneToMany {
-	Movie to Fiction{movies}
-}
-
-relationship OneToOne {
-	Emotion to EmotionGroup
-}
-	
 
 
 //Set pagination options
